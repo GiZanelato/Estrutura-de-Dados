@@ -18,14 +18,14 @@ void inserir(Tree *arvore, int valor){
     nova->esq = NULL;
     nova->valor = valor;
 
-    if(arvore->raiz == NULL{
+    if(arvore->raiz == NULL){
         arvore->raiz = nova;
     } else {
         Celula *atual = arvore->raiz;
         Celula *anterior = NULL;
-        while*(atual != NULL{
+        while(atual != NULL){
             anterior = atual;
-            if(atual->valor > valor{
+            if(atual->valor > valor){
                 atual = atual->esq;     
             } else{
                 atual = atual->dir;
@@ -38,10 +38,10 @@ void inserir(Tree *arvore, int valor){
         }
             
     }
-    rvore->qtde++;
+    arvore->qtde++;
 }
 
-int main({
+int main(){
     Tree *arvore = malloc(sizeof(Tree));
     arvore->qtde = 0;
     int dados[] = {13,5,18,4,8,15,21,2,16};
