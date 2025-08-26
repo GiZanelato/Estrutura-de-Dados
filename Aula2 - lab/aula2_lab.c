@@ -1,144 +1,147 @@
 #include <stdio.h>
 
+// Define uma constante para o tamanho máximo da lista
 #define TAMANHO 10
 
+// Define uma estrutura chamada Lista, que possui:
+// - um array de inteiros com TAMANHO posições
+// - um inteiro n que representa o número atual de elementos na lista
 typedef struct {
     int valores[TAMANHO];
     int n;
 } Lista;
 
 /**
- * @brief Verifica se a lista está cheia.
- * 
- * @param lista Ponteiro para a lista.
- * @return int Retorna 1 se a lista estiver cheia, caso contrário, retorna 0.
+ * Verifica se a lista está cheia (n == TAMANHO).
+ * Retorna 1 se cheia, 0 caso contrário.
  */
 int esta_cheia(Lista *lista) {
-    // if(lista -> n == TAMANHO){
-    //      return 1;
-    // }
-    // return 0;
-    return lista -> n == TAMANHO;
+    return lista->n == TAMANHO;
 }
 
-
 /**
- * @brief Verifica se a lista está vazia.
- * 
- * @param lista Ponteiro para a lista.
- * @return int Retorna 1 se a lista estiver vazia, caso contrário, retorna 0.
+ * Verifica se a lista está vazia (n == 0).
+ * Retorna 1 se vazia, 0 caso contrário.
  */
 int esta_vazia(Lista *lista) {
-    // if(lista -> n == 0){
-    //      return 1;
-    // }
-    // return 0;
-    return lista -> n == 0;
+    return lista->n == 0;
 }
 
 /**
- * @brief Encontra a posição onde um valor deve ser inserido na lista ordenada.
- * 
- * @param lista Ponteiro para a lista.
- * @param valor O valor a ser inserido.
- * @return int Retorna o índice onde o valor deve ser inserido.
+ * Encontra a posição correta (ordenada) onde um novo valor deve ser inserido.
+ * Percorre o array até achar onde o novo valor é menor ou igual ao valor atual.
+ * Retorna o índice onde o valor deve ser inserido.
  */
 int encontrar_posicao(Lista *lista, int valor) {
     int idx = 0;
-    while(idx < lista->n && valor > lista->valores[idx]){
+    while (idx < lista->n && valor > lista->valores[idx]) {
         idx++;
     }
     return idx;
 }
 
 /**
- * @brief Move os elementos da lista para a direita a partir de um índice, criando espaço para um novo valor.
- * 
- * @param lista Ponteiro para a lista.
- * @param indice O índice a partir do qual os elementos serão movidos.
+ * Move os elementos da lista uma posição para a direita a partir do índice dado.
+ * Isso abre espaço para inserção de um novo valor.
  */
 void deslocar_direita(Lista *lista, int indice) {
-    for(int i = lista -> n; i > indice; i--){
-        lista -> valores[i] = lista -> valores[i - 1];
+    for (int i = lista->n; i > indice; i--) {
+        lista->valores[i] = lista->valores[i - 1];
     }
 }
 
 /**
- * @brief Move os elementos da lista para a esquerda a partir de um índice, removendo um valor.
- * 
- * @param lista Ponteiro para a lista.
- * @param indice O índice a partir do qual os elementos serão movidos.
+ * Move os elementos da lista uma posição para a esquerda a partir do índice dado.
+ * Isso "remove" um valor do meio do vetor.
  */
 void deslocar_esquerda(Lista *lista, int indice) {
-    for(int i = indice; i < lista -> n - 1; i++){
-        lista -> valores[i] = lista -> valores[i + 1];
+    for (int i = indice; i < lista->n - 1; i++) {
+        lista->valores[i] = lista->valores[i + 1];
     }
 }
 
 /**
- * @brief Insere um valor na lista em sua posição ordenada.
- * 
- * @param lista Ponteiro para a lista.
- * @param valor O valor a ser inserido.
- * @return int Retorna 1 se a inserção for bem-sucedida, ou 0 se a lista estiver cheia.
+ * Insere um valor na lista, mantendo a ordem crescente.
+ * Retorna 1 se a inserção for bem-sucedida, ou 0 se a lista estiver cheia.
  */
 int inserir(Lista *lista, int valor) {
-    if(esta_cheia(lista)){
-        return 0; 
+    if (esta_cheia(lista)) {
+        return 0; // Falha ao inserir (lista cheia)
     }
+
+    // Encontra onde o valor deve ser inserido
     int idx = encontrar_posicao(lista, valor);
+
+    // Move elementos para a direita para abrir espaço
     deslocar_direita(lista, idx);
-    lista -> valores[idx] = valor;
-    lista -> n++;
+
+    // Insere o valor na posição correta
+    lista->valores[idx] = valor;
+
+    // Incrementa a contagem de elementos
+    lista->n++;
+
     return 1;
 }
 
 /**
- * @brief Remove um valor da lista.
- * 
- * @param lista Ponteiro para a lista.
- * @param valor O valor a ser removido.
- * @return int Retorna o valor removido se a remoção for bem-sucedida, ou -1 se a lista estiver vazia.
+ * Remove um valor da lista.
+ * Retorna o valor removido ou -1 se não foi possível (lista vazia ou valor não encontrado).
  */
 int remover(Lista *lista, int valor) {
-    if(esta_vazia(lista)){
-        return -1;
+    if (esta_vazia(lista)) {
+        return -1; // Falha (lista vazia)
     }
+
+    // Encontra o índice onde o valor estaria (mesmo se não existir)
     int idx = encontrar_posicao(lista, valor);
-    if(idx >= lista->n){
+
+    // Se o índice for além do final da lista, valor não está presente
+    if (idx >= lista->n) {
         return -1;
     }
+
+    // Remove o valor deslocando os elementos à esquerda
     deslocar_esquerda(lista, idx);
+
+    // Decrementa o número de elementos
     lista->n--;
+
     return valor;
 }
 
 /**
- * @brief Exibe todos os valores da lista.
- * 
- * @param lista Ponteiro para a lista.
+ * Imprime todos os elementos atuais da lista.
  */
 void exibir_lista(const Lista *lista) {
-    for(int i = 0; i < lista -> n; i++){
-        printf("%d ", lista -> valores[i]);
+    for (int i = 0; i < lista->n; i++) {
+        printf("%d ", lista->valores[i]);
     }
     printf("\n");
 }
 
+/**
+ * Função principal (main): testa a funcionalidade da lista ordenada.
+ */
 int main(void) {
-    Lista lista = { .n = 0 };
-    Lista *pl = &lista;
+    Lista lista = { .n = 0 }; // Inicializa a lista com 0 elementos
+    Lista *pl = &lista;       // Cria um ponteiro para a lista
+
+    // Vetor com 10 valores para inserir na lista
     int valores[] = {21, 14, 13, 10, 87, 35, 27, 56, 85, 29};
 
+    // Insere os valores na lista um por um e exibe o estado da lista após cada inserção
     for (int i = 0; i < TAMANHO; i++) {
         inserir(pl, valores[i]);
         exibir_lista(pl);
     }
 
+    // Mostra a posição onde cada valor está (após ordenação)
     for (int i = 0; i < TAMANHO; i++) {
         printf("O valor %d está na posição %d\n", valores[i], encontrar_posicao(pl, valores[i]));
     }
 
+    // Remove os valores da lista um por um e exibe o estado da lista após cada remoção
     for (int i = 0; i < TAMANHO; i++) {
         remover(pl, valores[i]);
         exibir_lista(pl);
