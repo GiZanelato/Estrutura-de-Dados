@@ -64,10 +64,10 @@ void remover(LDE *lista, int valor) {
     }
 
     //lista vazia
-    if(atual == NULL){
+   
+ if(atual == NULL){
         return;
     } 
-
     //meio da lista
     if (atual->proximo != NULL && anterior != NULL) {
         anterior->proximo = atual->proximo;
